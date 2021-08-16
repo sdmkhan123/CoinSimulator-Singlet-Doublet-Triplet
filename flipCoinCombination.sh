@@ -1,4 +1,5 @@
 #! /bin/bash -x
+
 HeadCount=0
 TailCount=0
 HHCount=0
@@ -12,6 +13,7 @@ declare -A doubletPercentageDictionary
 declare -A tripletDictionary
 declare -A tripletPercentageDictionary
 read num
+# Singlet code
 for (( i=0; i<num; i++ ))
 do
 	flip=$((RANDOM%2))
@@ -29,7 +31,17 @@ HeadPercentage=$( echo $HeadCount $totalFlip | awk '{ print 100 * $1/$2 }' )
 TailPercentage=$( echo $TailCount $totalFlip | awk '{ print 100 * $1/$2 }' )
 echo "Head Percentage is : $HeadPercentage %"
 echo "Tail Percentage is : $TailPercentage %"
+if [ $HeadCount -gt $TailCount ]
+then
+	echo "Head is win with :" $HeadCount
+elif [ $HeadCount -lt $TailCount ]
+then
+	echo "Tail is win with :" $TailCount
+else
+	echo "Tie"
 
+
+# doublet code
 for (( i=0; i<num; i++ ))
 do
 	flip=$((RANDOM%4))
@@ -59,6 +71,8 @@ doubletPercentageDictionary[3]=$( echo $TTCount $DoubletTatoalFlip | awk '{ prin
 echo "doublet count " ${doubletDictionary[*]}
 echo "doublet Percentage " ${doubletPercentageDictionary[*]}
 
+# Triplet code
+triplet=("HHH" "HHT" "HTH" "HTT" "THH" "THT" "TTH" "TTT")
 for (( i=0; i<num; i++ ))
 do
 	flip=$(( RANDOM % 8 ))
@@ -68,9 +82,16 @@ do
 done
 
 TripletTotalFlip=0
+tripletWin=0
+TripletIndex=0
 for (( i=0; i<8; i++ ))
 do
 	ValueCount=${tripletDictionary[$i]}
+	if [ $tripletWin -lt $ValueCount ]
+	then
+		tripletWin=$ValueCount
+		TripletIndex=$i
+	fi
 	TripletTotalFlip=$(( TripletTotalFlip + ValueCount ))
 done
 
@@ -82,3 +103,4 @@ do
 done
 echo "triplet count " ${tripletDictionary[*]}
 echo "triplet percentage " ${tripletPercentageDictionary[*]}
+echo "In Triplet the winning is :" ${triplet[$TripletIndex]}
