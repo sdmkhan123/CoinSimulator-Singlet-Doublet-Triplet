@@ -5,9 +5,12 @@ HHCount=0
 HTCount=0
 THCount=0
 TTCount=0
+
 declare -A Dictionary
 declare -A doubletDictionary
 declare -A doubletPercentageDictionary
+declare -A tripletDictionary
+declare -A tripletPercentageDictionary
 read num
 for (( i=0; i<num; i++ ))
 do
@@ -34,8 +37,10 @@ do
         then
                 HHCount=$(( HHCount + 1 ))
         elif [ $flip -eq 1 ]
+	then
                 HTCount=$(( HTCount + 1 ))
-	elif [ $$flip -eq 2 ]
+	elif [ $flip -eq 2 ]
+	then
 		THCount=$(( THCount + 1 ))
 	else
 		TTCount=$(( TTCount + 1 ))
@@ -50,3 +55,30 @@ doubletPercentageDictionary[0]=$( echo $HHCount $DoubletTatoalFlip | awk '{ prin
 doubletPercentageDictionary[1]=$( echo $HTCount $DoubletTatoalFlip | awk '{ print 100*$1/$2 }' )
 doubletPercentageDictionary[2]=$( echo $THCount $DoubletTatoalFlip | awk '{ print 100*$1/$2 }' )
 doubletPercentageDictionary[3]=$( echo $TTCount $DoubletTatoalFlip | awk '{ print 100*$1/$2 }' )
+
+echo "doublet count " ${doubletDictionary[*]}
+echo "doublet Percentage " ${doubletPercentageDictionary[*]}
+
+for (( i=0; i<num; i++ ))
+do
+	flip=$(( RANDOM % 8 ))
+	ValueCount=${tripletDictionary[$flip]}
+	ValueCount=$((ValueCount + 1))
+	tripletDictionary[$flip]=$ValueCount
+done
+
+TripletTotalFlip=0
+for (( i=0; i<8; i++ ))
+do
+	ValueCount=${tripletDictionary[$i]}
+	TripletTotalFlip=$(( TripletTotalFlip + ValueCount ))
+done
+
+for (( i=0; i<8; i++ ))
+do 
+        ValueCount=${tripletDictionary[$i]}
+	percentage=$( echo $ValueCount $TripletTotalFlip | awk '{ print 100*$1/$2 }' )
+	tripletPercentageDictionary[$i]=$percentage
+done
+echo "triplet count " ${tripletDictionary[*]}
+echo "triplet percentage " ${tripletPercentageDictionary[*]}
